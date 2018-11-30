@@ -261,6 +261,12 @@ class Radarr(object):
 
     @cherrypy.expose()
     @require()
+    @cherrypy.tools.json_out()
+    def Alerts(self):
+        return self.fetch('health')
+
+    @cherrypy.expose()
+    @require()
     def AddMovie(self, tmdbId, qualityProfileId, rootfolder='', monitored=True):
         d = {}
         try:
