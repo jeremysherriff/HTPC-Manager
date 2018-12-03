@@ -201,14 +201,14 @@ function sonarrStatusLabel(text) {
 function sonarrActions(id,ssn) {
 	var btns = $('<div>').css("display","inline-block");
 	btns.append( $('<li class="fa fa-search fa-fw fa-lg" id="q'+id+'">')
-    .attr("title","Latest Season:\nSearch missing episodes").click(function(){
+    .attr("title","Latest Season:\nSearch missing episodes").css("cursor","pointer").click(function(){
       $.when(ForceSearch(id,ssn)).done(function(){
         // Nothing to do
       }); //done
     }) //click
   );
   btns.append( $('<li class="fa fa-bookmark fa-lg" id="mon'+id+'">')
-    .attr("title","Series: Monitored\nClick to toggle").click(function(){
+    .attr("title","Series: Monitored\nClick to toggle").css("cursor","pointer").click(function(){
       $.when(ToggleMonitor(id)).done(function(bMon){
         $('#mon'+id).removeClass("fa-spinner").removeClass("fa-pulse");
         if (bMon) {
@@ -226,7 +226,7 @@ function sonarrActions(id,ssn) {
   btns.append( $('<span class="fa-stack fa-lg icon-sonarr" id="monssnb'+id+'" style="width: 16px; height: 14px; margin-left: 5px; margin-right: 5px;">')
     .append( $('<i class="fa fa-stack-1x fa-bookmark" id="monssnt'+id+'" style="top: -13px;">') )
     .append( $('<i class="fa fa-stack-1x fa-inverse" id="monssnl'+id+'" style="mix-blend-mode: difference; top: -14px;">').html('<sup style="font-size: 55%;">#</sup>') )
-    .attr("title","Latest Season: Monitored\nClick to toggle")
+    .attr("title","Latest Season: Monitored\nClick to toggle").css("cursor","pointer")
       .click(function(){if ($(this).hasClass("disabled")) return;
         $.when(ToggleMonitorSeason(id,ssn)).done(function(bMonSsn){
           $('#monssnt'+id).removeClass("fa-spinner").removeClass("fa-pulse");
@@ -243,7 +243,7 @@ function sonarrActions(id,ssn) {
     }) //click
   );
 	btns.append( $('<li class="fa fa-trash-o fa-lg" id="del'+id+'">')
-    .attr("title","Delete Series\n(keeps existing files/folders)").click(function(){
+    .attr("title","Delete Series\n(keeps existing files/folders)").css("cursor","pointer").click(function(){
       $.when(DeleteContent(id)).done(function(result){
         if (result) { loadShows(); }
       }); //done
