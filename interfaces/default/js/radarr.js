@@ -159,14 +159,14 @@ function radarrStatusLabel(text) {
 function radarrActions(id) {
 	var btns = $('<div>');
 	btns.append( $('<li class="fa fa-search fa-fw fa-lg" id="q'+id+'">')
-    .attr("title","Force Search").click(function(){
+    .attr("title","Force Search").css("cursor","pointer").click(function(){
       $.when(ForceSearch(id)).done(function(){
         // Nothing to do
       }); //done
     }) //click
   );
   btns.append( $('<li class="fa fa-bookmark fa-lg" id="mon'+id+'">')
-    .attr("title","Monitored\nClick to toggle").click(function(){
+    .attr("title","Monitored\nClick to toggle").css("cursor","pointer").click(function(){
       $.when(ToggleMonitor(id)).done(function(bMon){
         $('#mon'+id).removeClass("fa-spinner").removeClass("fa-pulse");
         if (bMon) {
@@ -180,7 +180,7 @@ function radarrActions(id) {
     }) //click
   );
 	btns.append( $('<li class="fa fa-trash-o fa-fw fa-lg" id="del'+id+'">')
-    .attr("title","Delete movie\n(keeps existing files/folders)").click(function(){
+    .attr("title","Delete movie\n(keeps existing files/folders)").css("cursor","pointer").click(function(){
       $.when(DeleteContent(id)).done(function(result){
         if (result) { loadMovies(); }
       }); //done
@@ -485,7 +485,7 @@ function Scanfolder() {
 }
 
 function ForceSearch(id) {
-  $('#q'+id).removeClass().addClass("fa fa-spinner fa-pulse fa-fw");
+  $('#q'+id).removeClass().addClass("fa fa-spinner fa-pulse fa-fw fa-lg");
   data = {
     "method": "MoviesSearch",
     "par": "movieIds",
