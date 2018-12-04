@@ -33,7 +33,7 @@
         <li class="active"><a href="#tvshows" data-toggle="tab">Movies</a></li>
         <li><a href="#calendar_tab" data-toggle="tab">Calendar</a></li>
         <li><a href="#history" data-toggle="tab">History</a></li>
-        <li><a href="#alerts" data-toggle="tab" id="alerts_tab">Alerts</a></li>
+        <li id="alerts_li" class="disabled"><a href="#alerts" data-toggle="tab" id="alerts_tab"></a></li>
       </ul>
       <div class="tab-content">
         <div id="tvshows" class="tab-pane mofa active">
@@ -85,7 +85,8 @@
 							<thead>
 									<tr>
 											<th class="span1">Severity</th>
-											<th>Message</th>
+											<th class="span4">Message</th>
+											<th></th>
 									</tr>
 							</thead>
 							<tbody id="alerts_table_body"></tbody>

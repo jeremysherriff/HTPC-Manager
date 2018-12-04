@@ -544,62 +544,110 @@ function DeleteContent(id) {
 }
 
 function loadAlerts() {
+  var alerts = 0;
   $.ajax({
     url: WEBDIR + 'radarr/Alerts',
     type: 'get',
     dataType: 'json',
     success: function(result) {
       $('#alerts_table_body').empty();
-      $('#alerts_tab').empty(); // try to hide the nav tab if no alert
-      if (result.length === 0) {
-        var row = $('<tr>');
-        row.append($('<td>').css("text-align","center").append($('<li class="fa fa-question-circle">')));
-        row.append($('<td>').html('No current alerts'));
-        $('#alerts_table_body').append(row);
-      } else {
-        var error_alert = false;
-        var warning_alert = false;
-        var info_alert = false;
-        $.each(result, function(alertix, alertitem) {
-          var alerticon = $('<li class="fa">');
-          if (alertitem.type == "error") {
-            error_alert = true;
-            alerticon.addClass("fa-exclamation-triangle text-error");
-          } else if (alertitem.type == "warning") {
-            warning_alert = true;
-            alerticon.addClass("fa-exclamation-circle text-warning");
-          } else if (alertitem.type == "information") {
-            info_alert = true;
-            alerticon.addClass("fa-info-circle");
-          } else {
-            error_alert = true;
-            alerticon.addClass("fa-question-circle");
-            alerticon.append(' '+alertitem.type);
-          }
-          
-          if (alertitem.wikiUrl.length > 0) {
-            var alertmsg = $('<a>').attr('href', alertitem.wikiUrl).attr('target', "_blank").text(alertitem.message + ' ').append($('<li class="fa fa-fw fa-external-link">'));
-          } else {
-            var alertmsg = $('<span>').text(alertitem.message);
-          }
-          var row = $('<tr>');
-          row.append(
-            $('<td>').css("text-align","center").append(alerticon),
-            $('<td>').html(alertmsg)
-          );
-          $('#alerts_table_body').append(row);
-        });
-        
-        if (error_alert) {
-          $('#alerts_tab').append( $('<li class="fa fa-exclamation-triangle fa-lg text-error">') );
-        } else if (warning_alert) {
-          $('#alerts_tab').append( $('<li class="fa fa-exclamation-circle fa-lg text-warning">') );
-        } else if (info_alert) {
-          $('#alerts_tab').append( $('<li class="fa fa-info-circle fa-lg">') );
+      $('#alerts_tab').empty();
+      var error_alert = false;
+      var warning_alert = false;
+      var info_alert = false;
+      $.each(result, function(alertix, alertitem) {
+        alerts++;
+        var alerticon = $('<li class="fa">');
+        if (alertitem.type.toLowerCase() == "error") {
+          error_alert = true;
+          alerticon.addClass("fa-exclamation-triangle text-error");
+        } else if (alertitem.type.toLowerCase() == "warning") {
+          warning_alert = true;
+          alerticon.addClass("fa-exclamation-circle text-warning");
+        } else if (alertitem.type.toLowerCase() == "information") {
+          info_alert = true;
+          alerticon.addClass("fa-info-circle");
         } else {
-          $('#alerts_tab').append( $('<li class="fa fa-question-circle fa-lg">') );
+          error_alert = true;
+          alerticon.addClass("fa-question-circle");
+          alerticon.append(' '+alertitem.type);
         }
-      }
+        
+        if (alertitem.wikiUrl.length > 0) {
+          var alertmsg = $('<a>').attr('href', alertitem.wikiUrl).attr('target', "_blank").text(alertitem.message + ' ').append($('<li class="fa fa-fw fa-external-link">'));
+        } else {
+          var alertmsg = $('<span>').text(alertitem.message);
+        }
+        var row = $('<tr>');
+        row.append(
+          $('<td>').css("text-align","center").append(alerticon),
+          $('<td colspan="2">').html(alertmsg)
+        );
+        $('#alerts_table_body').append(row);
+      });
+
+      // Repeat for Queue items that have issues
+      $.ajax({
+        url: WEBDIR + 'radarr/Queue',
+        type: 'get',
+        dataType: 'json',
+        success: function(queue) {
+          $.each(queue, function(queueix, queueitem) {
+            var alerticon = $('<li class="fa">');
+            if (queueitem.trackedDownloadStatus.toLowerCase() == "error") {
+              error_alert = true;
+              alerticon.addClass("fa-exclamation-triangle text-error");
+            } else if (queueitem.trackedDownloadStatus.toLowerCase() == "warning") {
+              warning_alert = true;
+              alerticon.addClass("fa-exclamation-circle text-warning");
+            } else if (queueitem.trackedDownloadStatus.toLowerCase() == "ok") {
+              info_alert = true;
+              alerticon.addClass("fa-info-circle");
+            } else {
+              error_alert = true;
+              alerticon.addClass("fa-question-circle");
+              alerticon.append(' '+queueitem.trackedDownloadStatus);
+            }
+            var alertmsg = ""
+            $.each(queueitem.statusMessages, function(msgix, msg) {
+              if (msgix > 0) { alertmsg += "<br />"; }
+              alertmsg += msg.messages;
+            });
+
+            var row = $('<tr>');
+            row.append(
+              $('<td>').css("text-align","center").append(alerticon),
+              $('<td>').html(queueitem.movie.title),
+              $('<td>').html(alertmsg)
+            );
+            if (!info_alert) { //add the row unless it's an OK state
+              alerts++;
+              $('#alerts_table_body').append(row);
+            }
+          });
+          
+          if (alerts == 0) {
+            var row = $('<tr>');
+            row.append($('<td>').css("text-align","center").append($('<li class="fa fa-question-circle">')));
+            row.append($('<td colspan="2">').html('No current alerts'));
+            $('#alerts_table_body').append(row);
+            $('#alerts_tab').append(" &nbsp; ");
+            $('#alerts_li').addClass("disabled");
+          } else {
+            if (error_alert) {
+              $('#alerts_tab').append( $('<li class="fa fa-exclamation-triangle fa-lg text-error">') );
+            } else if (warning_alert) {
+              $('#alerts_tab').append( $('<li class="fa fa-exclamation-circle fa-lg text-warning">') );
+            } else if (info_alert) {
+              $('#alerts_tab').append( $('<li class="fa fa-info-circle fa-lg">') );
+            } else {
+              $('#alerts_tab').append( $('<li class="fa fa-question-circle fa-lg">') );
+            }
+            $('#alerts_tab').append(" " + alerts).addClass("nav");
+            $('#alerts_li').removeClass("disabled");
+          }
+        }
+      });
     }
   });
 }

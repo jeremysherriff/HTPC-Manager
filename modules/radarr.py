@@ -267,6 +267,12 @@ class Radarr(object):
 
     @cherrypy.expose()
     @require()
+    @cherrypy.tools.json_out()
+    def Queue(self):
+        return self.fetch('queue')
+
+    @cherrypy.expose()
+    @require()
     def AddMovie(self, tmdbId, qualityProfileId, rootfolder='', monitored=True):
         d = {}
         try:
