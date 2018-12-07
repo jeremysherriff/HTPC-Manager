@@ -297,6 +297,12 @@ class Sonarr(object):
 
     @cherrypy.expose()
     @require()
+    @cherrypy.tools.json_out()
+    def Queue(self):
+        return self.fetch('queue')
+
+    @cherrypy.expose()
+    @require()
     def AddShow(self, tvdbid, quality, monitor='all', seriestype='standard',
                 rootfolder='', seasonfolder='on', specials=False): # fix me
         d = {}
