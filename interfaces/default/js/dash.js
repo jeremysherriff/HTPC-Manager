@@ -912,9 +912,17 @@ function loaduTorrent() {
 
 function start_refresh(module, fn) {
   if ($('#dash_' + module).children('h3:first-child').has('.refresh-btns').length == 0) {
-    $('#dash_' + module).children('h3:first-child').append('<span class="refresh-btns">' +
-      '<i id="' + module + '-refresh"  style="font-size:0.6em" class="btn fa fa-refresh" title="Refresh" onclick="' + fn + '();"></i>' +
-      '<i class="fa fa-spinner fa-pulse" style="font-size:0.7em" id="' + module + '-spinner"></i></span>');
+    $('#dash_' + module).children('h3:first-child')
+      .append( $('<div class="pull-right">')
+        .append('<span id="dash_' + module + '_lastrefresh" style="font-size: 14px;">')
+        .append('<span class="refresh-btns">' +
+        '<i id="' + module + '-refresh"  style="font-size:0.7em" class="btn fa fa-refresh fa-fw" title="Refresh" onclick="' + fn + '();"></i>' +
+        '<i class="fa fa-spinner fa-pulse fa-fw" style="font-size:0.7em" id="' + module + '-spinner"></i></span>')
+      );
+  }
+  if (module == "sysinfo") {
+    var time = moment().format('HH:mm:ss');
+    $('#dash_' + module + '_lastrefresh').html(time + " &nbsp; ");
   }
   $('#' + module + '-refresh').hide();
   $('#dash_' + module + '_table_body').html("");
