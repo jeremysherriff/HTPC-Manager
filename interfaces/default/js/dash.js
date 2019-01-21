@@ -512,7 +512,8 @@ function loadNextAired(options) {
 }
 
 function loadRadarrCalendar(options) {
-  if (!$('#radarr_calendar_table_body').length) return
+  if (!$('#dash_radarr_table_body').length) return
+  start_refresh('radarr', 'loadRadarrCalendar');
   $.getJSON(WEBDIR + 'radarr/oldCalendar', function(result) {
     $.each(result, function(i, cal) {
       if (i >= 5) return
@@ -524,9 +525,11 @@ function loadRadarrCalendar(options) {
         $('<td>').append(name).append(img),
         $('<td>').append($('<div class="pull-right">').text(moment(cal.inCinemas).fromNow()))
       )
-      $('#radarr_calendar_table_body').append(row);
+      $('#dash_radarr_table_body').append(row);
     });
 
+  }).always(function() {
+    end_refresh('radarr');
   });
 }
 
@@ -1094,6 +1097,7 @@ if ( dash_refresh_interval > 0 ) {
     loaddiskinfo();
     loadsmartinfo();
     loadsonarrCalendar();
+    loadRadarrCalendar();
   }, 1000 * dash_refresh_interval ) // timer uses miliseconds
 }
 
