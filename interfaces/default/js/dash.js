@@ -1,4 +1,5 @@
-var row_n = 0
+var row_n = 0;
+var stats_dash_message_enabled = false;
 
 function dash_radarr_calendar() {
 
@@ -725,7 +726,11 @@ function loadsysinfo(options) {
       )
 
       // add one more with current user and login?
-    )
+    );
+		
+    if (stats_dash_message_enabled) {
+      $('#dash_sysinfo_message').html(moment().format('HH:mm:ss') + " &nbsp; ");
+    }
 
   }).always(function() {
     end_refresh('sysinfo');
@@ -914,15 +919,11 @@ function start_refresh(module, fn) {
   if ($('#dash_' + module).children('h3:first-child').has('.refresh-btns').length == 0) {
     $('#dash_' + module).children('h3:first-child')
       .append( $('<div class="pull-right">')
-        .append('<span id="dash_' + module + '_lastrefresh" style="font-size: 14px;">')
+        .append('<span id="dash_' + module + '_message" style="font-size: 13px;">')
         .append('<span class="refresh-btns">' +
         '<i id="' + module + '-refresh"  style="font-size:0.7em" class="btn fa fa-refresh fa-fw" title="Refresh" onclick="' + fn + '();"></i>' +
         '<i class="fa fa-spinner fa-pulse fa-fw" style="font-size:0.7em" id="' + module + '-spinner"></i></span>')
       );
-  }
-  if (module == "sysinfo") {
-    var time = moment().format('HH:mm:ss');
-    $('#dash_' + module + '_lastrefresh').html(time + " &nbsp; ");
   }
   $('#' + module + '-refresh').hide();
   $('#dash_' + module + '_table_body').html("");
@@ -1003,6 +1004,12 @@ $(document).ready(function() {
     jQuery("#notConfigured").detach().appendTo("#dash-content"); //display setup msg if no modules enabled
   } else {
     var modules_per_row = 0;
+    //Fetch any page display settings
+    $.getJSON(WEBDIR + "stats/return_settings", function (return_settings) {
+      if (return_settings.stats_dash_message_enabled == true) {
+        stats_dash_message_enabled = true;
+      }
+    });
     if (dash_order != '0' && dash_order != 'False') { // create modules if dash_order is set
       rows_to_build = dash_order.split(";");
       for (i = 0; i < rows_to_build.length; i++) { //loop rows

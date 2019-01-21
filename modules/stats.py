@@ -74,6 +74,7 @@ class Stats(object):
                 {'type': 'text', 'label': 'OHM port', 'placeholder': '8085', 'desc': '', 'name': 'stats_ohm_port'},
                 {'type': 'bool', 'label': 'Enable S.M.A.R.T.', 'desc': 'smartmontools is used for grabbing HDD health info (python must be executed as administrator)', 'name': 'stats_smart_enabled'},
                 {'type': 'bool', 'label': 'Enable Scripts', 'desc': 'Add your scripts to userdata/scripts. Dont come crying if you delete your computer', 'name': 'stats_scripts_enabled'},
+                {'type': 'bool', 'label': 'Show last refresh time<br />on dashboard widget', 'desc': 'Enable dash widget status message', 'name': 'stats_dash_message_enabled'},
                 {'type': 'text', 'label': 'Reverse proxy link', 'placeholder': '', 'desc': 'Page title link. E.g /webmin or https://managementbox.mydomain.com/', 'name': 'stats_reverse_proxy_link'}
 
             ]
@@ -483,6 +484,7 @@ class Stats(object):
 
             d['stats_ignore_mountpoint'] = htpc.settings.get('stats_ignore_mountpoint')
             d['stats_ignore_filesystem'] = htpc.settings.get('stats_ignore_filesystem')
+            d['stats_dash_message_enabled'] = htpc.settings.get('stats_dash_message_enabled')
 
         except Exception as e:
             self.logger.error('Getting stats settings %s' % e)
