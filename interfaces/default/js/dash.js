@@ -531,7 +531,8 @@ function loadRadarrCalendar(options) {
 }
 
 function loadsonarrCalendar(options) {
-  if (!$('#calendar_table_body').length) return
+  if (!$('#dash_sonarr_table_body').length) return
+  start_refresh('sonarr', 'loadsonarrCalendar');
   $.getJSON(WEBDIR + 'sonarr/oldCalendar', function(result) {
     j = 0;
     $.each(result, function(i, cal) {
@@ -545,17 +546,20 @@ function loadsonarrCalendar(options) {
         $('<td>').html('S' + pad(cal.seasonNumber, 2) + 'E' + pad(cal.episodeNumber, 2) + '&nbsp').append(img),
         $('<td>').append($('<div class="pull-right">').text(moment(cal.airDateUtc).fromNow()))
       )
-      $('#calendar_table_body').append(row);
+      $('#dash_sonarr_table_body').append(row);
       j++;
     });
     if (j === 0) {
       row = $('<tr>');
       row.append($('<td>').attr("colspan", 2).append('<div class="text-center"><small>No future episodes in Sonarr calendar</small></div>'))
-      $('#calendar_table_body').append(row);
+      $('#dash_sonarr_table_body').append(row);
       return false;
     }
 
+  }).always(function() {
+    end_refresh('sonarr');
   });
+  // $('#dash_sonarr_message').html( $('<i class="fa fa-warning fa-fw text-warning">') ).append("0"+"&nbsp;");
 }
 
 function loadNextAiredSickrage(options) {
