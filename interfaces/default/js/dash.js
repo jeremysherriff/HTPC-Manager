@@ -531,6 +531,41 @@ function loadRadarrCalendar(options) {
   }).always(function() {
     end_refresh('radarr');
   });
+  var alerts = 0;
+  $.ajax({
+    url: WEBDIR + 'radarr/Alerts',
+    type: 'get',
+    dataType: 'json',
+    success: function(result) {
+      $.each(result, function(alertix, alertitem) {
+        alerts++;
+      });
+    }
+  }).always(function(){
+      // Repeat for Queue items that have issues
+      $.ajax({
+        url: WEBDIR + 'radarr/Queue',
+        type: 'get',
+        dataType: 'json',
+        success: function(queue) {
+          $.each(queue, function(queueix, queueitem) {
+            if (queueitem.trackedDownloadStatus.toLowerCase() == "ok") {
+              info_alert = true;
+            }
+            if (!info_alert) { //add the row unless it's an OK state
+              alerts++;
+            }
+          });
+          
+        if (alerts) {
+          $('#dash_radarr_message').html( $('<i class="fa fa-warning fa-fw text-warning">') )
+            .append(alerts+"&nbsp;");
+        } else {
+          $('#dash_radarr_message').empty()
+        }
+      }
+    });
+  }); //always
 }
 
 function loadsonarrCalendar(options) {
