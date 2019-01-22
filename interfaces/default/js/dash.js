@@ -558,8 +558,10 @@ function loadRadarrCalendar(options) {
           });
           
         if (alerts) {
-          $('#dash_radarr_message').html( $('<i class="fa fa-warning fa-fw text-warning">') )
-            .append(alerts+"&nbsp;");
+          $('#dash_radarr_message').html(
+            $('<a href="radarr/#alerts">').append(
+              $('<i class="fa fa-warning fa-fw text-warning">') )
+              .append(alerts) );
         } else {
           $('#dash_radarr_message').empty()
         }
@@ -628,8 +630,10 @@ function loadsonarrCalendar(options) {
         });
 
         if (alerts) {
-          $('#dash_sonarr_message').html( $('<i class="fa fa-warning fa-fw text-warning">') )
-            .append(alerts+"&nbsp;");
+          $('#dash_sonarr_message').html(
+            $('<a href="sonarr/#alerts">').append(
+              $('<i class="fa fa-warning fa-fw text-warning">') )
+              .append(alerts) );
         } else {
           $('#dash_sonarr_message').empty()
         }
@@ -809,7 +813,7 @@ function loadsysinfo(options) {
     );
 		
     if (stats_dash_message_enabled) {
-      $('#dash_sysinfo_message').html(moment().format('HH:mm:ss') + " &nbsp; ");
+      $('#dash_sysinfo_message').html("@ " + moment().format('HH:mm:ss'));
     }
 
   }).always(function() {
@@ -1000,7 +1004,7 @@ function start_refresh(module, fn) {
     $('#dash_' + module).children('h3:first-child')
       .append( $('<div class="pull-right">')
         .append('<span id="dash_' + module + '_message" style="font-size: 13px;">')
-        .append('<span class="refresh-btns">' +
+        .append('&nbsp;<span class="refresh-btns">' +
         '<i id="' + module + '-refresh"  style="font-size:0.7em" class="btn fa fa-refresh fa-fw" title="Refresh" onclick="' + fn + '();"></i>' +
         '<i class="fa fa-spinner fa-pulse fa-fw" style="font-size:0.7em" id="' + module + '-spinner"></i></span>')
       );
