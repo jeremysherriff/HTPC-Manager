@@ -1,5 +1,4 @@
 var row_n = 0;
-var stats_dash_message_enabled = false;
 
 function dash_radarr_calendar() {
 
