@@ -624,6 +624,9 @@ function DeleteContent(id) {
 
 function loadAlerts() {
   var alerts = 0;
+  var error_alert = false;
+  var warning_alert = false;
+  var info_alert = false;
   $.ajax({
     url: WEBDIR + 'sonarr/Alerts',
     type: 'get',
@@ -631,9 +634,6 @@ function loadAlerts() {
     success: function(result) {
       $('#alerts_table_body').empty();
       $('#alerts_tab').empty(); // try to hide the nav tab if no alert
-      var error_alert = false;
-      var warning_alert = false;
-      var info_alert = false;
       $.each(result, function(alertix, alertitem) {
         alerts++;
         var alerticon = $('<li class="fa">');
@@ -672,6 +672,7 @@ function loadAlerts() {
         dataType: 'json',
         success: function(queue) {
           $.each(queue, function(queueix, queueitem) {
+            var suppress_alert = false;
             var alerticon = $('<li class="fa">');
             if (queueitem.status.toLowerCase() == "delayed") {
               info_alert = true;
@@ -683,6 +684,7 @@ function loadAlerts() {
               warning_alert = true;
               alerticon.addClass("fa-exclamation-circle text-warning");
             } else if (queueitem.trackedDownloadStatus.toLowerCase() == "ok") {
+              suppress_alert = true;
               info_alert = true;
               alerticon.addClass("fa-info-circle");
             } else {
@@ -704,7 +706,7 @@ function loadAlerts() {
                 "x" + queueitem.episode.episodeNumber),
               $('<td>').html(alertmsg)
             );
-            if (!info_alert) { //add the row unless it's an OK state
+            if (!suppress_alert) { //add the row unless it's an OK state
               alerts++;
               $('#alerts_table_body').append(row);
             }
