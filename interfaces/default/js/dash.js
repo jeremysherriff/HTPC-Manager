@@ -824,7 +824,7 @@ function loadsysinfo(options) {
   }).always(function() {
     end_refresh('sysinfo');
   });
-  }, 50);
+  }, 150);
 }
 
 function loaddiskinfo() {
